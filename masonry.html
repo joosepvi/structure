@@ -26,66 +26,82 @@
 	<a href="index.html"><h1>structure.create</h1></a>
 	<h2>Müüritise kandevõime</h2>
 
-	<div class="content-flex">
-		<div>
-			<label for="load">Arvutuslik koormus:</label>
-			<input type="number" id="load" name="load" value="30" onkeyup="updateAll()" onClick="this.select();">
-			<i>kN</i>
-			<br>
+	<div class="container-flex">
+		<div class="item-flex">
+			<div class="input-container">
+				<label for="load">Arvutuslik resultantkoormus:</label>
+				<input type="number" id="load" name="load" value="30" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit">kN</div>
+			</div>
 
-			<label for="windLoad">Arvutuslik lauskoormus:</label>
-			<input type="number" id="windLoad" name="windLoad" value="1" onkeyup="updateAll()" onClick="this.select();">
-			<i><sup>kN</sup>/<sub>m</sub></i>
-			<br>
+			<div class="input-container">
+				<label for="eccentricity">Resultantkoormuse ekstsentrilisus:</label>
+				<input type="number" id="eccentricity" name="eccentricity" value="0.05" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit">m</div>
+			</div>
 
-			<label for="eccentricity">Koormuse ekstsentrilisus:</label>
-			<input type="number" id="eccentricity" name="eccentricity" value="0.05" onkeyup="updateAll()" onClick="this.select();">
-			<i>m</i>
-			<br>
+			<div class="input-container">
+				<label for="windLoad">Arvutuslik lauskoormus:</label>
+				<input type="number" id="windLoad" name="windLoad" value="1" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit"><sup>kN</sup>/<sub>m</sub></div>
+			</div>
 
-			<label for="thickness">Müüritise paksus:</label>
-			<input type="number" id="thickness" name="thickness" value="0.2" onkeyup="updateAll()" onClick="this.select();">
-			<i>m</i>
-			<br>
+			<div class="input-container">
+				<label for="thickness">Müüritise paksus:</label>
+				<input type="number" id="thickness" name="thickness" value="0.2" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit">m</div>
+			</div>
 
-			<label for="height">Müüritise kõrgus:</label>
-			<input type="number" id="height" name="height" value="3" onkeyup="updateAll()" onClick="this.select();">
-			<i>m</i>
-			<br>
+			<div class="input-container">
+				<label for="height">Müüritise kõrgus:</label>
+				<input type="number" id="height" name="height" value="3" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit">m</div>
+			</div>
 
-			<label for="width">Müüritise laius:</label>
-			<input type="number" id="width" name="width" value="1" onkeyup="updateAll()" onClick="this.select();">
-			<i>m</i>
-			<br>
+			<div class="input-container">
+				<label for="width">Müüritise laius:</label>
+				<input type="number" id="width" name="width" value="1" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit">m</div>
+			</div>
 
-			<label for="brick-strength">Müürikivi normaliseeritud tugevus:</label>
-			<input type="number" id="brick-strength" name="brick-strength" value="10" onkeyup="updateAll()" onClick="this.select();">
-			<i>MPa</i>
-			<br>
+			<div class="input-container">
+				<label for="brick-strength">Müürikivi normaliseeritud tugevus:</label>
+				<input type="number" id="brick-strength" name="brick-strength" value="10" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit">MPa</div>
+			</div>
 
-			<label for="mortar-strength">Mördi normatiivne tugevus:</label>
-			<input type="number" id="mortar-strength" name="mortar-strength" value="5" onkeyup="updateAll()" onClick="this.select();">
-			<i>MPa</i>
-			<br>
+			<div class="input-container">
+				<label for="mortar-strength">Mördi normatiivne tugevus:</label>
+				<input type="number" id="mortar-strength" name="mortar-strength" value="5" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit">MPa</div>
+			</div>
 
-			<label for="k-factor">K tegur:</label>
-			<input type="number" id="k-factor" name="k-factor" value="0.55" onkeyup="updateAll()" onClick="this.select();">
-			
+			<div class="input-container">
+				<label for="k-factor">K tegur:</label>
+				<input type="number" id="k-factor" name="k-factor" value="0.55" onkeyup="updateAll()" onClick="this.select();">
+				<div class="input-unit"></div>
+			</div>
+
+		</div>
+		<div class="item-flex">
 			<p class="resultText">Müüritise survetugevus:</p>
-			<p>\[f_k = {K \cdot f_b^{0.7} \cdot f_m^{0.3}}\]</p>
+			<div>\[f_k = {K \cdot f_b^{0.7} \cdot f_m^{0.3}}\]</div>
 			<div class="calculationResult" id="masonryCharacterisicStrength"></div>
-			<p>\[f_d = {\frac{f_k}{\gamma_M}}\]</p>
+			<div>\[f_d = {\frac{f_k}{\gamma_M}}\]</div>
 			<div class="calculationResult" id="masonryDesignStrength"></div>
-
 			<br>
 			<div class="resultText" id="structuralResistanceLoad"></div>
+		</div>
+		<div class="item-flex">
+			<canvas id="canvas" width="400" height="600">A illustrative sketch should be here.</canvas>
 
-			<br>
-			<div class="vahetulemused" id="vahetulemused"></div>
+		</div>
+		<div class="item-flex">
+			<div class="dataListString" id="vahetulemused"></div>
 
 		</div>
 
-		<canvas id="canvas" width="400" height="600">Wall sketch should be here.</canvas>
+
 
 	</div>
 
