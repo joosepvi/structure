@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Müüritise kandevõime</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+	<meta property="og:title" content="structure.create"/>
+	<meta property="og:description" content="Armeerimata müüritise kalkulaator">
+	<meta property="keywords" content="structural, computational, engineering, civil engineering, dynamo, grasshopper, revit, scripts">
+
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<!--    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kalam">-->
+	<script type="text/javascript" src="masonry.js"></script>
+
+	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	<script id="MathJax-script" async
+		src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+	</script>
+
+</head>
+
+
+
+<body onload="updateAll()">
+	<a href="index.html"><h1>structure.create</h1></a>
+	<h2>Müüritise kandevõime</h2>
+
+	<div class="content-flex">
+		<div>
+			<label for="load">Arvutuslik koormus:</label>
+			<input type="number" id="load" name="load" value="30" onkeyup="updateAll()" onClick="this.select();">
+			<i>kN</i>
+			<br>
+
+			<label for="windLoad">Arvutuslik lauskoormus:</label>
+			<input type="number" id="windLoad" name="windLoad" value="1" onkeyup="updateAll()" onClick="this.select();">
+			<i><sup>kN</sup>/<sub>m</sub></i>
+			<br>
+
+			<label for="eccentricity">Koormuse ekstsentrilisus:</label>
+			<input type="number" id="eccentricity" name="eccentricity" value="0.05" onkeyup="updateAll()" onClick="this.select();">
+			<i>m</i>
+			<br>
+
+			<label for="thickness">Müüritise paksus:</label>
+			<input type="number" id="thickness" name="thickness" value="0.2" onkeyup="updateAll()" onClick="this.select();">
+			<i>m</i>
+			<br>
+
+			<label for="height">Müüritise kõrgus:</label>
+			<input type="number" id="height" name="height" value="3" onkeyup="updateAll()" onClick="this.select();">
+			<i>m</i>
+			<br>
+
+			<label for="width">Müüritise laius:</label>
+			<input type="number" id="width" name="width" value="1" onkeyup="updateAll()" onClick="this.select();">
+			<i>m</i>
+			<br>
+
+			<label for="brick-strength">Müürikivi normaliseeritud tugevus:</label>
+			<input type="number" id="brick-strength" name="brick-strength" value="10" onkeyup="updateAll()" onClick="this.select();">
+			<i>MPa</i>
+			<br>
+
+			<label for="mortar-strength">Mördi normatiivne tugevus:</label>
+			<input type="number" id="mortar-strength" name="mortar-strength" value="5" onkeyup="updateAll()" onClick="this.select();">
+			<i>MPa</i>
+			<br>
+
+			<label for="k-factor">K tegur:</label>
+			<input type="number" id="k-factor" name="k-factor" value="0.55" onkeyup="updateAll()" onClick="this.select();">
+			
+			<p class="resultText">Müüritise survetugevus:</p>
+			<p>\[f_k = {K \cdot f_b^{0.7} \cdot f_m^{0.3}}\]</p>
+			<div class="calculationResult" id="masonryCharacterisicStrength"></div>
+			<p>\[f_d = {\frac{f_k}{\gamma_M}}\]</p>
+			<div class="calculationResult" id="masonryDesignStrength"></div>
+
+			<br>
+			<div class="resultText" id="structuralResistanceLoad"></div>
+
+			<br>
+			<div class="vahetulemused" id="vahetulemused"></div>
+
+		</div>
+
+		<canvas id="canvas" width="400" height="600">Wall sketch should be here.</canvas>
+
+	</div>
+
+	<div class="footer">Kasutada omal vastutusel. Autor: Joosep Viik</div>
+
+</body>
+</html>

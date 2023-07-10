@@ -1,5 +1,5 @@
 :root {
-    --buttonw: 200px;
+    --buttonw: min(198px, 30vh, 30vw);
 }
 * {
     /*border: 1px dashed red;*/
@@ -18,7 +18,14 @@ body {
 h1 {
     padding: 15px;
 }
-.button-container {
+h2 {
+    padding: 15px;
+}
+a {
+    color: black;
+    text-decoration: none;
+}
+.content-container {
     flex-grow: 1;
 }
 .button {
@@ -30,32 +37,39 @@ h1 {
     left: calc(50% - var(--buttonw)*0.5);
     background: red;
     text-align: center;
+    border: 4px solid transparent;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+.button:hover {
+    border: 4px solid black;
+    transition: 0.2s;
 }
 #muuritis {
-    animation: circling 60s linear infinite;
+    animation: circling 120s linear infinite;
 
-    background: url(img/tarind-skeem.jpg) no-repeat center;
+    background: url(img/skeem-betoonarv.png) no-repeat center;
     background-size: contain;
 }
 #shs {
-    animation: circling 60s linear infinite;
-    animation-delay: -15s;
+    animation: circling 120s linear infinite;
+    animation-delay: -30s;
 
-    background: url(img/shs-skeem.jpg) no-repeat center;
+    background: url(img/skeem-shs.png) no-repeat center;
     background-size: contain;
 }
 #ipe {
-    animation: circling 60s linear infinite;
-    animation-delay: -30s;
+    animation: circling 120s linear infinite;
+    animation-delay: -60s;
 
-    background: url(img/teras-skeem.jpg) no-repeat center;
+    background: url(img/skeem-ipe.png) no-repeat center;
     background-size: contain;
 }
 #concrete {
-    animation: circling 60s linear infinite;
-    animation-delay: -45s;
+    animation: circling 120s linear infinite;
+    animation-delay: -90s;
 
-    background: url(img/betoon-skeem.jpg) no-repeat center;
+    background: url(img/skeem-betoon.png) no-repeat center;
     background-size: contain;
 }
 @keyframes circling{
@@ -74,4 +88,63 @@ h1 {
     font-size: smaller;
     font-style: italic;
     color: grey;
+}
+
+
+
+form {
+    grid-gap: 20px;
+    margin-top: 30px;
+}
+label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+input[type="number"] {
+    text-align: right;
+    width: 100px;
+    padding: 7px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+}
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+input[type="submit"]:hover {
+    background-color: #3e8e41;
+}
+.resultText {
+    margin-top: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.calculationResult {
+    margin-top: 30px;
+    font-size: 1.2rem;
+    font-style: italic;
+}
+.vahetulemused {
+    margin-top: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-style: italic;
+}
+canvas {
+    border: 1px solid black;
+    background-color: white;
+}
+.content-flex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    width: calc(100% - 30px);
+    padding: 0 15px;
 }
