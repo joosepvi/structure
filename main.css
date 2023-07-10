@@ -1,0 +1,77 @@
+:root {
+    --buttonw: 200px;
+}
+* {
+    /*border: 1px dashed red;*/
+    margin: 0;
+    padding: 0;
+}
+body {
+    min-height: 100vh;
+    max-width: 100%;
+    font-family: "Gill Sans", Arial, "sans-serif";
+    background: url(img/bg_paper.jpg) repeat;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+h1 {
+    padding: 15px;
+}
+.button-container {
+    flex-grow: 1;
+}
+.button {
+    width: var(--buttonw);
+    height: var(--buttonw);
+    position: absolute;
+    margin: auto;
+    top: calc(50% - var(--buttonw)*0.5);
+    left: calc(50% - var(--buttonw)*0.5);
+    background: red;
+    text-align: center;
+}
+#muuritis {
+    animation: circling 60s linear infinite;
+
+    background: url(img/tarind-skeem.jpg) no-repeat center;
+    background-size: contain;
+}
+#shs {
+    animation: circling 60s linear infinite;
+    animation-delay: -15s;
+
+    background: url(img/shs-skeem.jpg) no-repeat center;
+    background-size: contain;
+}
+#ipe {
+    animation: circling 60s linear infinite;
+    animation-delay: -30s;
+
+    background: url(img/teras-skeem.jpg) no-repeat center;
+    background-size: contain;
+}
+#concrete {
+    animation: circling 60s linear infinite;
+    animation-delay: -45s;
+
+    background: url(img/betoon-skeem.jpg) no-repeat center;
+    background-size: contain;
+}
+@keyframes circling{
+    0%{
+        transform: rotate(0deg) translateX(calc(min(30vw, 30vh))) rotate(-0deg);
+    }
+    100%{
+        transform: rotate(360deg) translateX(calc(min(30vw, 30vh))) rotate(-360deg);
+    }
+}
+.footer {
+    padding: 20px 40px;
+    width: auto;
+    margin-top: auto;
+    text-align: right;
+    font-size: smaller;
+    font-style: italic;
+    color: grey;
+}
