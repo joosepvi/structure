@@ -10,6 +10,8 @@
 	<meta property="keywords" content="structural, computational, engineering, civil engineering, dynamo, grasshopper, revit, scripts">
 
 	<link rel="stylesheet" type="text/css" href="main.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 	<!--    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kalam">-->
 	<script type="text/javascript" src="masonry.js"></script>
 
@@ -17,6 +19,7 @@
 	<script id="MathJax-script" async
 		src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 	</script>
+
 
 </head>
 
@@ -79,14 +82,26 @@
 			<div class="input-container">
 				<label for="k-factor">K tegur:</label>
 				<input type="number" id="k-factor" name="k-factor" value="0.55" onkeyup="updateAll()" onClick="this.select();">
-				<div class="input-unit"></div>
+				<div class="input-unit">
+					<div class="info-icon">
+						<img class="K-table" src="img/K-tegur.JPG" alt="Teguri K väärtuste tabel"/>
+						<i class="fa fa-info-circle"></i>
+					</div>
+				</div>
+			</div>
+
+			<div class="input-container" style="padding-top: 20px">
+				<label class="checkbox-toggle-left" for="checkbox-toggle">Põhimört</label>
+				<input type="checkbox" id="checkbox-toggle" name="checkbox-toggle" onclick="updateFormula();updateAll()"/>
+				<div class="checkbox-toggle-right">Peenmört</div>
 			</div>
 
 		</div>
 		<div class="item-flex">
 			<h4>Müüritise tugevus:</h4>
 			<div class="calculationResult" >
-				<span style="float: left">\[f_k = {K \cdot f_b^{0.7} \cdot f_m^{0.3}}=\]</span>
+				<span id="peenmort" style="float: left; display: block">\[f_k = {K \cdot f_b^{0.7} \cdot f_m^{0.3}}=\]</span>
+				<span id="jamemort" style="float: left; display: none">\[f_k = {K \cdot f_b^{0.85}}=\]</span>
 				&nbsp<span id="masonryCharacteristicStrength"></span>&nbspMPa
 			</div>
 

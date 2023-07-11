@@ -11,7 +11,11 @@ function roundThree(initialValue) {
 
 function calculateMasonryCompCharStrength(kFactor, brickStrength, mortarStrength) {
     // Calculate compressive strength of masonry in N/mm^2
-    return kFactor * Math.pow(brickStrength, 0.7) * Math.pow(mortarStrength, 0.3);
+    if (document.getElementById('checkbox-toggle').checked) {
+        return kFactor * Math.pow(brickStrength, 0.7) * Math.pow(mortarStrength, 0.3);
+    } else {
+        return kFactor * Math.pow(brickStrength, 0.85);
+    }
 }
 function calculateMasonryCompDesignStrength(masonryCharStrength) {
     return masonryCharStrength/1.7;
@@ -56,10 +60,10 @@ function calculateResistanceLoad(pointLoad, windLoad, eccentricity, thickness, h
     const eccentricityCreep = calculateEccentricityCreep(hEff, thickness, eccentricityInitialMid, eccentricityAccidental);
     
     // Calculate the compression area of the wall
-    const eccentricityTop = eccentricity + eccentricityAccidental;
-    const eccentricityMid = eccentricityInitialMid + eccentricityAccidental + eccentricityCreep;
-    const AcTop = b * (t - 2 * eccentricityTop); // at the top
-    const AcMid = b * (t - 2 * eccentricityMid); // near the center
+    const eccentricityTop = Math.max(eccentricity + eccentricityAccidental, 0.05*thickness);
+    const eccentricityMid = Math.max(eccentricityInitialMid + eccentricityAccidental + eccentricityCreep, 0.05*thickness);
+    const AcTop = Math.max(b * (t - 2 * eccentricityTop), 0); // at the top
+    const AcMid = Math.max(b * (t - 2 * eccentricityMid), 0); // near the center
 
     // Calculate the slenderness reduction factor
     const slenderness = h/t;
@@ -88,6 +92,18 @@ function calculateResistanceLoad(pointLoad, windLoad, eccentricity, thickness, h
     //return AcMid;
     return Math.min(nRdTop, nRdMid);
 }
+
+
+function updateFormula(){
+    if (document.getElementById('checkbox-toggle').checked) {
+        document.getElementById('jamemort').style.display = "block";
+        document.getElementById('peenmort').style.display = "none";
+    } else {
+        document.getElementById('jamemort').style.display = "none";
+        document.getElementById('peenmort').style.display = "block";
+    }
+}
+
 
 
 function updateResult() {

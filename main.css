@@ -2,7 +2,7 @@
     --buttonw: min(198px, 30vh, 30vw);
 }
 * {
-    /*border: 1px dashed red;*/
+    /*border: 0.1px dashed red;*/
     margin: 0;
     padding: 0;
 }
@@ -105,10 +105,23 @@ label {
     text-align: right;
     padding-right: 10px;
 }
+
+.checkbox-toggle-left {
+    width: 80px;
+    text-align: right;
+    padding-right: 10px;
+    margin-left: auto;
+}
+.checkbox-toggle-right {
+    width: 80px;
+    text-align: left;
+    padding-left: 10px;
+    margin-right: auto;
+}
 .input-container {
     display: flex;
     align-items: center;
-    padding-bottom: 7px;
+    padding: 4px 0;
 }
 input[type="number"] {
     text-align: right;
@@ -120,24 +133,61 @@ input[type="number"] {
     border-radius: 5px;
     box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
 }
-input[type="submit"] {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
+
+input[type="checkbox"] {
+    position: relative;
+    width: 60px;
+    height: 24px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ffd8d8;
+    outline: none;
+    border-radius: 2rem;
     cursor: pointer;
-    width: 20%;
-    float: left;
+    box-shadow: inset 0 0 5px rgb(0 0 0 / 50%);
 }
-input[type="submit"]:hover {
-    background-color: #3e8e41;
+input[type="checkbox"]::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border-radius: 2rem;
+    background: #fff;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: 0.2s;
 }
+input[type="checkbox"]:checked::before {
+    transform: translateX(36px);
+    background: #fff;
+}
+input[type="checkbox"]:checked {
+    background: #ff3838;
+}
+
 .input-unit{
     width: 10%;
     float: left;
     font-style: italic;
     padding-left: 5px;
+}
+.K-table {
+    width: 600px;
+    display: none;
+    translate: -62% 8%;
+    position: absolute;
+    z-index: 1;
+    border: 3px solid #555;
+}
+.info-icon {
+    color: lightgray;
+    margin: auto;
+}
+.info-icon:hover {
+    color: black;
+}
+.info-icon:hover .K-table {
+    display: block;
 }
 .calculationResult {
     width: 100%;
