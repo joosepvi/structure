@@ -1,22 +1,3 @@
-function calculateMasonryCompressiveStrength(kFactor, brickStrength, mortarStrength) {
-    // Calculate compressive strength of masonry in N/mm^2
-    return kFactor * Math.pow(brickStrength, 0.7) * Math.pow(mortarStrength, 0.3);
-}
-
-function calculateMomentFromLoad(load, eccentricity) {
-    // Calculate the moment at the top of the wall from the point load in kNm
-    return load*eccentricity;
-}
-
-function calculateMomentFromWindLoad(windLoad, height) {
-    // Calculate the moment in the middle of the wall from the wind load in kNm
-    return -windLoad*height*height/8;
-}
-
-function calculateEccentricityAccidental(height) {
-    return height/300;
-}
-
 function roundOne(initialValue) {
     return Math.round(10 * initialValue) / 10;
 }
@@ -27,31 +8,53 @@ function roundThree(initialValue) {
     return Math.round(1000 * initialValue) / 1000;
 }
 
+
+function calculateMasonryCompCharStrength(kFactor, brickStrength, mortarStrength) {
+    // Calculate compressive strength of masonry in N/mm^2
+    return kFactor * Math.pow(brickStrength, 0.7) * Math.pow(mortarStrength, 0.3);
+}
+function calculateMasonryCompDesignStrength(masonryCharStrength) {
+    return masonryCharStrength/1.7;
+}
+function calculateMomentFromPointLoad(pointLoad, eccentricity) {
+    // Calculate the moment at the top of the wall from the point load in kNm
+    return pointLoad*eccentricity;
+}
+function calculateMomentFromWindLoad(windLoad, height) {
+    // Calculate the moment in the middle of the wall from the wind load in kNm
+    return -windLoad*height*height/8;
+}
+function calculateEccentricityAccidental(height) {
+    return height/300;
+}
 function calculateEccentricityCreep(height, thickness, eccentricityInitialMid, eccentricityAccidental) {
-    const creepFactor = 1.0;
+    const creepFactor = 2.0;
     return 0.002 * creepFactor * (height/thickness) * Math.sqrt(thickness*(eccentricityInitialMid+eccentricityAccidental));
 }
 
-function calculateStructuralResistanceLoad(load, windLoad, eccentricity, thickness, height, width, masonryStrength) {
+
+function calculateResistanceLoad(pointLoad, windLoad, eccentricity, thickness, height, width, masonryCharStrength) {
     const h = height; // Height of wall in meters
     const b = width; // Width of wall in meters
     const t = thickness; // Thickness of the wall in meters
-    const fM = masonryStrength;
+    const fMk = masonryCharStrength;
     const hEff = h; // Effective height of wall (fixed to height of wall)
+
+    // Calculate masonry design compressive strength
+    const fMd = calculateMasonryCompDesignStrength(fMk);
 
     // Calculate accidental eccentricity
     const eccentricityAccidental = calculateEccentricityAccidental(hEff);
 
     // Calculate bending moment
-    const mEdTop = calculateMomentFromLoad(load, eccentricity); // Bending moment at the top of the wall in kNm
+    const mEdTop = calculateMomentFromPointLoad(pointLoad, eccentricity); // Bending moment at the top of the wall in kNm
     const mEdWind = calculateMomentFromWindLoad(windLoad, h); // Maximum bending moment from the wind load
     const mEdMid = 0.6 * mEdTop + mEdWind; // Max bending moment near the center of the wall in kNm
 
     // Calculate eccentricity
-    const eccentricityInitialMid = Math.abs(mEdMid/load);
+    const eccentricityInitialMid = Math.abs(mEdMid/pointLoad);
     const eccentricityCreep = calculateEccentricityCreep(hEff, thickness, eccentricityInitialMid, eccentricityAccidental);
-
-
+    
     // Calculate the compression area of the wall
     const eccentricityTop = eccentricity + eccentricityAccidental;
     const eccentricityMid = eccentricityInitialMid + eccentricityAccidental + eccentricityCreep;
@@ -64,16 +67,17 @@ function calculateStructuralResistanceLoad(load, windLoad, eccentricity, thickne
     const chi = Math.pow(Math.E, -u*u/2);
 
     // Calculate axial load resistance
-    const nRdTop = fM/1.7 * AcTop * 1000; // Axial load resistance at the top in kN
-    const nRdMid = chi * fM/1.7 * AcMid * 1000; // Axial load resistance near the middle in kN
+    const nRdTop = fMd * AcTop * 1000; // Axial load resistance at the top in kN
+    const nRdMid = chi * fMd * AcMid * 1000; // Axial load resistance near the middle in kN
 
 
-    document.getElementById("vahetulemused").innerHTML = `e_mTop = ${roundThree(eccentricity)} m <br>
-				e_mMid = ${roundThree(eccentricityInitialMid)} m <br>
-				e_a = ${roundThree(eccentricityAccidental)} m <br>
-				e_k = ${roundThree(eccentricityCreep)} m <br>
-				e_Top = ${roundThree(eccentricityTop)} m <br>
-				e_Mid = ${roundThree(eccentricityMid)} m <br>
+    document.getElementById("vahetulemused").innerHTML = `Vahetulemused: <br>
+                e_mTop = ${roundOne(eccentricity*1000)} mm <br>
+				e_mMid = ${roundOne(eccentricityInitialMid*1000)} mm <br>
+				e_a = ${roundOne(eccentricityAccidental*1000)} mm <br>
+				e_k = ${roundOne(eccentricityCreep*1000)} mm <br>
+				e_Top = ${roundOne(eccentricityTop*1000)} mm <br>
+				e_Mid = ${roundOne(eccentricityMid*1000)} mm <br>
 				A_cTop = ${roundThree(AcTop)} m2 <br>
 				A_cMid = ${roundThree(AcMid)} m2 <br>
 				lambda = ${roundTwo(slenderness)} <br>
@@ -87,7 +91,7 @@ function calculateStructuralResistanceLoad(load, windLoad, eccentricity, thickne
 
 
 function updateResult() {
-    const load = parseFloat(document.getElementById("load").value);
+    const pointLoad = parseFloat(document.getElementById("pointLoad").value);
     const windLoad = parseFloat(document.getElementById("windLoad").value);
     const eccentricity = parseFloat(document.getElementById("eccentricity").value);
     const height = parseFloat(document.getElementById("height").value);
@@ -97,93 +101,133 @@ function updateResult() {
     const mortarStrength = parseFloat(document.getElementById("mortar-strength").value);
     const kFactor = parseFloat(document.getElementById("k-factor").value);
 
-    const masonryCharacteristicStrength = calculateMasonryCompressiveStrength(kFactor, brickStrength, mortarStrength);
-    const masonryDesignStrength = masonryCharacteristicStrength/1.7;
+    const masonryCharStrength = calculateMasonryCompCharStrength(kFactor, brickStrength, mortarStrength);
+    const masonryDesignStrength = calculateMasonryCompDesignStrength(masonryCharStrength);
 
-    const structuralResistanceLoad = calculateStructuralResistanceLoad(load, windLoad, eccentricity, thickness, height, width, masonryCharacteristicStrength);
+    const resistanceLoad = calculateResistanceLoad(pointLoad, windLoad, eccentricity, thickness, height, width, masonryCharStrength);
 
-    document.getElementById("masonryCharacterisicStrength").innerHTML = `= ${roundTwo(masonryCharacteristicStrength)} MPa`;
-    document.getElementById("masonryDesignStrength").innerHTML = `= ${roundTwo(masonryDesignStrength)} MPa`;
-    document.getElementById("structuralResistanceLoad").innerHTML = `Kandevõime: ${roundOne(structuralResistanceLoad)} kN`;
+    document.getElementById("masonryCharacteristicStrength").innerHTML = roundTwo(masonryCharStrength);
+    document.getElementById("masonryDesignStrength").innerHTML = roundTwo(masonryDesignStrength);
+    document.getElementById("structuralResistanceLoad").innerHTML = roundOne(resistanceLoad);
 }
 
 
 function visualize() {
-    const canvas = document.getElementById('canvas');
+    const canvas = document.getElementById('diagram');
     const ctx = canvas.getContext('2d');
-    const cwidth = canvas.width;
-    const cheight = canvas.height;
-
     const thickness = parseFloat(document.getElementById('thickness').value);
     const height = parseFloat(document.getElementById('height').value);
-    const load = parseFloat(document.getElementById('load').value);
+    const pointLoad = parseFloat(document.getElementById('pointLoad').value);
     const windLoad = parseFloat(document.getElementById('windLoad').value);
     const eccentricity = parseFloat(document.getElementById('eccentricity').value);
 
+    // Define useful parameters for drawing
+    const pd = 40;
+    const sc = 100;
+    const scDiagram = 30;
 
+    // Calculate bending moments
+    const mEdTop = calculateMomentFromPointLoad(pointLoad, eccentricity); // Bending moment at the top of the wall in kNm
+    const mEdWind = calculateMomentFromWindLoad(windLoad, height); // Maximum bending moment from the wind load
+    const mEd125 = 0.125 * mEdTop + 0.4375*mEdWind;
+    const mEd25 = 0.25 * mEdTop + 0.75*mEdWind; // Bending moment at the lower quarter of the wall in kNm
+    const mEd375 = 0.375 * mEdTop + 0.9375*mEdWind;
+    const mEd50 = 0.5 * mEdTop + mEdWind; // Bending moment at the center of the wall in kNm
+    const mEd625 = 0.625 * mEdTop + 0.9375*mEdWind;
+    const mEd75 = 0.75 * mEdTop + 0.75*mEdWind; // Bending moment at the upper quarter of the wall in kNm
+    const mEd875 = 0.875 * mEdTop + 0.4375*mEdWind;
+
+    // Find the max and the min
+    const mEdMin = Math.min(mEdTop, mEd50, mEd625, mEd75, -1);
+    const mEdMax = Math.max(mEdTop, mEd50, mEd625, mEd75, 0);
+
+    // Set suitable canvas dimensions
+    const cWidth = 2*pd + sc*thickness + 20 + scDiagram*(mEdMax-mEdMin);
+    const cHeight = 2*pd + sc*height + 0.5*pointLoad+20;
+    canvas.width = cWidth;
+    canvas.height = cHeight;
 
     // Clear canvas
-    ctx.clearRect(0, 0, cwidth, cheight);
+    ctx.clearRect(0, 0, cWidth, cHeight);
     // Set the line width and color
     ctx.lineWidth = 1;
     ctx.strokeStyle = "Black";
 
 
-
     // Draw wall
     ctx.beginPath();
-    ctx.moveTo(cwidth/2, cheight-50);
-    ctx.lineTo(cwidth/2, cheight - height * 100 - 50);
-    ctx.lineTo(cwidth/2 + thickness * 100, cheight - height * 100 - 50);
-    ctx.lineTo(cwidth/2 + thickness * 100, cheight - 50);
+    ctx.moveTo(pd, cHeight - pd);
+    ctx.lineTo(pd, cHeight - height * sc - pd);
+    ctx.lineTo(pd + thickness * sc, cHeight - height * sc - pd);
+    ctx.lineTo(pd + thickness * sc, cHeight - pd);
     ctx.stroke();
 
     // Draw load arrow
     ctx.beginPath();
-    ctx.moveTo(cwidth/2 + (thickness/2 + eccentricity)*100, cheight - height * 100 - 50 - 0.5*load-20);
-    ctx.lineTo(cwidth/2 + (thickness/2 + eccentricity)*100, cheight - height * 100 - 50);
-    ctx.lineTo(cwidth/2 + (thickness/2 + eccentricity)*100 + 5, cheight - height * 100 - 50 - 10);
-    ctx.moveTo(cwidth/2 + (thickness/2 + eccentricity)*100, cheight - height * 100 - 50);
-    ctx.lineTo(cwidth/2 + (thickness/2 + eccentricity)*100 - 5, cheight - height * 100 - 50 - 10);
+    ctx.moveTo(pd + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd - 0.5*pointLoad-20);
+    ctx.lineTo(pd + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd);
+    ctx.lineTo(pd + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 10);
+    ctx.moveTo(pd + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd);
+    ctx.lineTo(pd + (thickness/2 + eccentricity)*sc - 5, cHeight - height * sc - pd - 10);
     ctx.stroke();
-
-
-
-    // Calculate bending moments
-    const mEdTop = calculateMomentFromLoad(load, eccentricity); // Bending moment at the top of the wall in kNm
-    const mEdWind = calculateMomentFromWindLoad(windLoad, height); // Maximum bending moment from the wind load
-    const mEdMid = 0.5 * mEdTop + mEdWind; // Bending moment at the center of the wall in kNm
 
 
     // Set the start and end points of the diagram
-    const startX = cwidth/2 + thickness*100 + 50;
-    const startY = cheight - height * 100 - 50;
-    const endX = cwidth/2 + thickness*100 + 50;
-    const endY = cheight - 50;
+    const startX = pd + thickness*sc + 20 + mEdMax*scDiagram;
+    const startY = cHeight - height*sc - pd;
+    const endX = pd + thickness*sc + 20 + mEdMax*scDiagram;
+    const endY = cHeight - pd;
 
     // Set the control point of the curve
-    const quadStartX = startX - mEdTop*10;
-    const quadStartY = startY;
-    const quadControlX = startX - mEdMid*10;
-    const quadControlY = (startY + endY)/2;
+    const curveStartX = startX - mEdTop*scDiagram;
+    const curveStartY = startY;
+    const curve875X = startX - mEd875*scDiagram;
+    const curve875Y = startY + (endY-startY)/8;
+    const curve75X = startX - mEd75*scDiagram;
+    const curve75Y = startY + (endY-startY)/4;
+    const curve625X = startX - mEd625*scDiagram;
+    const curve625Y = startY + (endY-startY)*3/8;
+    const curve50X = startX - mEd50*scDiagram;
+    const curve50Y = (startY + endY)/2;
+    const curve375X = startX - mEd375*scDiagram;
+    const curve375Y = startY + (endY-startY)*5/8;
+    const curve25X = startX - mEd25*scDiagram;
+    const curve25Y = startY + (endY-startY)*3/4;
+    const curve125X = startX - mEd125*scDiagram;
+    const curve125Y = startY + (endY-startY)*7/8;
 
 
-
-    // Set the line width and color
-    ctx.lineWidth = 2;
+    // Set the diagram line width and color
+    ctx.lineWidth = 1;
     ctx.strokeStyle = "red";
 
-    // Draw the curve
+    // Draw the diagram curve
     ctx.beginPath();
     ctx.moveTo(startX, startY);
-    ctx.lineTo(quadStartX, quadStartY);
-    ctx.quadraticCurveTo(quadControlX, quadControlY, endX, endY);
+    ctx.lineTo(curveStartX, curveStartY);
+
+    // ctx.quadraticCurveTo(curve875X, curve875Y, curve75X, curve75Y);
+    // ctx.quadraticCurveTo(curve625X, curve625Y, curve50X, curve50Y);
+    // ctx.quadraticCurveTo(curve375X, curve375Y, curve25X, curve25Y);
+    // ctx.quadraticCurveTo(curve125X, curve125Y, endX, endY);
+
+    ctx.lineTo(curve875X, curve875Y);
+    ctx.lineTo(curve75X, curve75Y);
+    ctx.lineTo(curve625X, curve625Y);
+    ctx.lineTo(curve50X, curve50Y);
+    ctx.lineTo(curve375X, curve375Y);
+    ctx.lineTo(curve25X, curve25Y);
+    ctx.lineTo(curve125X, curve125Y);
+    ctx.lineTo(endX, endY);
+
     ctx.lineTo(startX, startY);
     ctx.stroke();
 
+
+
     ctx.font = "12px Arial";
-    ctx.fillText(Math.round((0.6 * mEdTop + mEdWind)*100)/100, startX, (quadControlY-10*height));
-    ctx.fillText(Math.round(mEdTop*100)/100, startX, quadStartY);
+    ctx.fillText(roundTwo(0.6*mEdTop+mEdWind) + " kNm", startX + 5, (curve50Y-10*height));
+    ctx.fillText(roundTwo(mEdTop) + " kNm", startX + 5, curveStartY);
 
 }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ee">
 <head>
 	<title>Müüritise kandevõime</title>
 	<meta charset="UTF-8">
@@ -23,14 +23,14 @@
 
 
 <body onload="updateAll()">
-	<a href="index.html"><h1>structure.create</h1></a>
+	<a class="return-to-index" href="index.html"><h1>structure.create</h1></a>
 	<h2>Müüritise kandevõime</h2>
 
 	<div class="container-flex">
 		<div class="item-flex">
 			<div class="input-container">
-				<label for="load">Arvutuslik resultantkoormus:</label>
-				<input type="number" id="load" name="load" value="30" onkeyup="updateAll()" onClick="this.select();">
+				<label for="pointLoad">Arvutuslik resultantkoormus:</label>
+				<input type="number" id="pointLoad" name="load" value="30" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit">kN</div>
 			</div>
 
@@ -84,23 +84,30 @@
 
 		</div>
 		<div class="item-flex">
-			<p class="resultText">Müüritise survetugevus:</p>
-			<div>\[f_k = {K \cdot f_b^{0.7} \cdot f_m^{0.3}}\]</div>
-			<div class="calculationResult" id="masonryCharacterisicStrength"></div>
-			<div>\[f_d = {\frac{f_k}{\gamma_M}}\]</div>
-			<div class="calculationResult" id="masonryDesignStrength"></div>
-			<br>
-			<div class="resultText" id="structuralResistanceLoad"></div>
+			<h4>Müüritise tugevus:</h4>
+			<div class="calculationResult" >
+				<span style="float: left">\[f_k = {K \cdot f_b^{0.7} \cdot f_m^{0.3}}=\]</span>
+				&nbsp<span id="masonryCharacteristicStrength"></span>&nbspMPa
+			</div>
+
+			<div class="calculationResult">
+				<span style="float: left;">\[f_d = {\frac{f_k}{\gamma_M}}=\]</span>
+				&nbsp<span id="masonryDesignStrength"></span>&nbspMPa
+			</div>
+
+			<div class="calculationResultFinal">
+				Kandevõime:&nbsp<span id="structuralResistanceLoad"></span>&nbspkN
+			</div>
+
 		</div>
 		<div class="item-flex">
-			<canvas id="canvas" width="400" height="600">A illustrative sketch should be here.</canvas>
+			<canvas id="diagram" width="100" height="100">A illustrative diagram should be here.</canvas>
 
 		</div>
 		<div class="item-flex">
 			<div class="dataListString" id="vahetulemused"></div>
 
 		</div>
-
 
 
 	</div>
