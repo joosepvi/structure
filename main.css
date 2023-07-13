@@ -173,9 +173,11 @@ input[type="checkbox"]:checked {
 }
 .K-table {
     width: 600px;
+    max-width: calc(100vw - 26px);
     display: none;
-    translate: -62% 8%;
     position: absolute;
+    left: 0;
+    translate: 10px 8%;
     z-index: 1;
     border: 3px solid #555;
 }
