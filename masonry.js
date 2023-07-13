@@ -12,9 +12,9 @@ function roundThree(initialValue) {
 function calculateMasonryCompCharStrength(kFactor, brickStrength, mortarStrength) {
     // Calculate compressive strength of masonry in N/mm^2
     if (document.getElementById('checkbox-toggle').checked) {
-        return kFactor * Math.pow(brickStrength, 0.7) * Math.pow(mortarStrength, 0.3);
-    } else {
         return kFactor * Math.pow(brickStrength, 0.85);
+    } else {
+        return kFactor * Math.pow(brickStrength, 0.7) * Math.pow(mortarStrength, 0.3);
     }
 }
 function calculateMasonryCompDesignStrength(masonryCharStrength) {
@@ -76,18 +76,18 @@ function calculateResistanceLoad(pointLoad, windLoad, eccentricity, thickness, h
 
 
     document.getElementById("vahetulemused").innerHTML = `Vahetulemused: <br>
-                e_mTop = ${roundOne(eccentricity*1000)} mm <br>
-				e_mMid = ${roundOne(eccentricityInitialMid*1000)} mm <br>
-				e_a = ${roundOne(eccentricityAccidental*1000)} mm <br>
+                e_Top = ${roundOne(eccentricity*1000)} mm <br>
+				e_Mid = ${roundOne(eccentricityInitialMid*1000)} mm <br>
+				e_init = ${roundOne(eccentricityAccidental*1000)} mm <br>
 				e_k = ${roundOne(eccentricityCreep*1000)} mm <br>
-				e_Top = ${roundOne(eccentricityTop*1000)} mm <br>
-				e_Mid = ${roundOne(eccentricityMid*1000)} mm <br>
-				A_cTop = ${roundThree(AcTop)} m2 <br>
-				A_cMid = ${roundThree(AcMid)} m2 <br>
+				e_mk,Top = ${roundOne(eccentricityTop*1000)} mm <br>
+				e_mk,Mid = ${roundOne(eccentricityMid*1000)} mm <br>
+				A_c,Top = ${roundThree(AcTop)} m2 <br>
+				A_c,Mid = ${roundThree(AcMid)} m2 <br>
 				lambda = ${roundTwo(slenderness)} <br>
 				chi = ${roundTwo(chi)} <br>
-				N_RdTop = ${roundTwo(nRdTop)} kN <br>
-				N_RdMid = ${roundTwo(nRdMid)} kN <br>`;
+				N_Rd,Top = ${roundTwo(nRdTop)} kN <br>
+				N_Rd,Mid = ${roundTwo(nRdMid)} kN <br>`;
 
     //return AcMid;
     return Math.min(nRdTop, nRdMid);
@@ -98,9 +98,11 @@ function updateFormula(){
     if (document.getElementById('checkbox-toggle').checked) {
         document.getElementById('jamemort').style.display = "block";
         document.getElementById('peenmort').style.display = "none";
+        document.getElementById('mortar-input').style.display = "none";
     } else {
         document.getElementById('jamemort').style.display = "none";
         document.getElementById('peenmort').style.display = "block";
+        document.getElementById('mortar-input').style.display = "flex";
     }
 }
 
@@ -171,11 +173,9 @@ function visualize() {
 
 
     // Draw wall
-    ctx.beginPath();
-    ctx.moveTo(pd, cHeight - pd);
-    ctx.lineTo(pd, cHeight - height * sc - pd);
-    ctx.lineTo(pd + thickness * sc, cHeight - height * sc - pd);
-    ctx.lineTo(pd + thickness * sc, cHeight - pd);
+    ctx.rect(pd, cHeight - pd, thickness * sc, -height * sc);
+    ctx.fillStyle = 'lightgrey';
+    ctx.fill();
     ctx.stroke();
 
     // Draw load arrow
@@ -185,6 +185,7 @@ function visualize() {
     ctx.lineTo(pd + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 10);
     ctx.moveTo(pd + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd);
     ctx.lineTo(pd + (thickness/2 + eccentricity)*sc - 5, cHeight - height * sc - pd - 10);
+    ctx.strokeStyle = "blue";
     ctx.stroke();
 
 
@@ -242,8 +243,11 @@ function visualize() {
 
 
     ctx.font = "12px Arial";
+    ctx.fillStyle = "black";
     ctx.fillText(roundTwo(0.6*mEdTop+mEdWind) + " kNm", startX + 5, (curve50Y-10*height));
     ctx.fillText(roundTwo(mEdTop) + " kNm", startX + 5, curveStartY);
+    ctx.fillText(roundTwo(pointLoad) + " kN", pd + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 0.5*pointLoad-20);
+    ctx.fillText("e = " + 1000*eccentricity + " mm", pd + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 0.5*pointLoad-5);
 
 }
 
