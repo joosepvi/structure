@@ -35,34 +35,34 @@
 			<h4>Koormused:</h4>
 			<div class="input-container">
 				<label for="pointLoad">Arvutuslik resultantkoormus:</label>
-				<input type="number" id="pointLoad" name="load" value="30" min="0" onkeyup="updateAll()" onClick="this.select();">
+				<input type="number" id="pointLoad" name="load" value="30" min="0" step="any" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit">kN</div>
 			</div>
 			<div class="input-container">
 				<label for="eccentricity">Resultantkoormuse ekstsentrilisus:</label>
-				<input type="number" id="eccentricity" name="eccentricity" value="0.05" onkeyup="updateAll()" onClick="this.select();">
+				<input type="number" id="eccentricity" name="eccentricity" value="0.05" step="any" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit">m</div>
 			</div>
 			<div class="input-container">
 				<label for="windLoad">Arvutuslik lauskoormus:</label>
-				<input type="number" id="windLoad" name="windLoad" value="1" onkeyup="updateAll()" onClick="this.select();">
+				<input type="number" id="windLoad" name="windLoad" value="1" step="any" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit"><sup>kN</sup>/<sub>m</sub></div>
 			</div>
 
 			<h4>Geomeetria:</h4>
 			<div class="input-container">
 				<label for="height">Müüritise kõrgus:</label>
-				<input type="number" id="height" name="height" value="3" min="0" onkeyup="updateAll()" onClick="this.select();">
+				<input type="number" id="height" name="height" value="3" min="0" step="any" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit">m</div>
 			</div>
 			<div class="input-container">
 				<label for="thickness">Müüritise paksus:</label>
-				<input type="number" id="thickness" name="thickness" value="0.19" min="0" onkeyup="updateAll()" onClick="this.select();">
+				<input type="number" id="thickness" name="thickness" value="0.19" min="0" step="any" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit">m</div>
 			</div>
 			<div class="input-container">
 				<label for="width">Müüritise laius:</label>
-				<input type="number" id="width" name="width" value="1" min="0" onkeyup="updateAll()" onClick="this.select();">
+				<input type="number" id="width" name="width" value="1" min="0" step="any" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit">m</div>
 			</div>
 
@@ -74,12 +74,12 @@
 			</div>
 			<div class="input-container">
 				<label for="brick-strength">Müürikivi normaliseeritud tugevus:</label>
-				<input type="number" id="brick-strength" name="brick-strength" value="10" min="0" onkeyup="updateAll()" onClick="this.select();">
+				<input type="number" id="brick-strength" name="brick-strength" value="10" min="0" step="any" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit">MPa</div>
 			</div>
 			<div class="input-container" id="mortar-input">
 				<label for="mortar-strength">Mördi normatiivne tugevus:</label>
-				<input type="number" id="mortar-strength" name="mortar-strength" value="5" min="0" onkeyup="updateAll()" onClick="this.select();">
+				<input type="number" id="mortar-strength" name="mortar-strength" value="5" min="0" step="any" onkeyup="updateAll()" onClick="this.select();">
 				<div class="input-unit">MPa</div>
 			</div>
 			<div class="input-container">
@@ -123,7 +123,7 @@
 
 	</div>
 
-	<div class="footer">Kasutada omal vastutusel. Autor: Joosep Viik</div>
+	<div class="footer">Created by Joosep Viik</div>
 
 </body>
 </html>
