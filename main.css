@@ -218,8 +218,8 @@ input[type="checkbox"]:checked {
     font-style: italic;
 }
 canvas {
-    border: 1px solid black;
-    background-color: white;
+    /*border: 1px solid black;*/
+    /*background-color: white;*/
     margin: 0 15px;
 }
 .container-flex {

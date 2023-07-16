@@ -32,7 +32,7 @@ function calculateEccentricityAccidental(height) {
     return height/300;
 }
 function calculateEccentricityCreep(height, thickness, eccentricityInitialMid, eccentricityAccidental) {
-    const creepFactor = 2.0;
+    const creepFactor = 1.0;
     return 0.002 * creepFactor * (height/thickness) * Math.sqrt(thickness*(eccentricityInitialMid+eccentricityAccidental));
 }
 
@@ -84,7 +84,8 @@ function calculateResistanceLoad(pointLoad, windLoad, eccentricity, thickness, h
 				e_mk,Mid = ${roundOne(eccentricityMid*1000)} mm <br>
 				A_c,Top = ${roundThree(AcTop)} m2 <br>
 				A_c,Mid = ${roundThree(AcMid)} m2 <br>
-				lambda = ${roundTwo(slenderness)} <br>
+				lambda_h = ${roundTwo(slenderness)} (< 27 !)<br>
+				u = ${roundTwo(u)} <br>
 				chi = ${roundTwo(chi)} <br>
 				N_Rd,Top = ${roundTwo(nRdTop)} kN <br>
 				N_Rd,Mid = ${roundTwo(nRdMid)} kN <br>`;
@@ -142,7 +143,8 @@ function visualize() {
     // Define useful parameters for drawing
     const pd = 40;
     const sc = 100;
-    const scDiagram = 30;
+    const scDiagram = 25;
+    const wWindLoad = Math.abs(windLoad)*scDiagram;
 
     // Calculate bending moments
     const mEdTop = calculateMomentFromPointLoad(pointLoad, eccentricity); // Bending moment at the top of the wall in kNm
@@ -160,7 +162,7 @@ function visualize() {
     const mEdMax = Math.max(mEdTop, mEd50, mEd625, mEd75, 0);
 
     // Set suitable canvas dimensions
-    const cWidth = 2*pd + sc*thickness + 20 + scDiagram*(mEdMax-mEdMin);
+    const cWidth = 2*pd + wWindLoad + 20 + sc*thickness + 20 + scDiagram*(mEdMax-mEdMin);
     const cHeight = 2*pd + sc*height + 0.5*pointLoad+20;
     canvas.width = cWidth;
     canvas.height = cHeight;
@@ -171,28 +173,31 @@ function visualize() {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "Black";
 
-
     // Draw wall
-    ctx.rect(pd, cHeight - pd, thickness * sc, -height * sc);
+    ctx.rect(pd + wWindLoad + 20, cHeight - pd, thickness * sc, -height * sc);
     ctx.fillStyle = 'lightgrey';
     ctx.fill();
     ctx.stroke();
 
-    // Draw load arrow
+    // Draw pointload arrow
     ctx.beginPath();
-    ctx.moveTo(pd + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd - 0.5*pointLoad-20);
-    ctx.lineTo(pd + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd);
-    ctx.lineTo(pd + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 10);
-    ctx.moveTo(pd + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd);
-    ctx.lineTo(pd + (thickness/2 + eccentricity)*sc - 5, cHeight - height * sc - pd - 10);
+    ctx.moveTo(pd + wWindLoad + 20 + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd - 0.5*pointLoad-20);
+    ctx.lineTo(pd + wWindLoad + 20 + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd);
+    ctx.lineTo(pd + wWindLoad + 20 + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 10);
+    ctx.moveTo(pd + wWindLoad + 20 + (thickness/2 + eccentricity)*sc, cHeight - height * sc - pd);
+    ctx.lineTo(pd + wWindLoad + 20 + (thickness/2 + eccentricity)*sc - 5, cHeight - height * sc - pd - 10);
     ctx.strokeStyle = "blue";
     ctx.stroke();
 
+    // Draw distributed load
+    ctx.rect(pd, cHeight - pd, wWindLoad, -height*sc);
+    ctx.lineWidth = 1;
+    ctx.stroke();
 
     // Set the start and end points of the diagram
-    const startX = pd + thickness*sc + 20 + mEdMax*scDiagram;
+    const startX = pd + wWindLoad + 20 + thickness*sc + 20 + mEdMax*scDiagram;
     const startY = cHeight - height*sc - pd;
-    const endX = pd + thickness*sc + 20 + mEdMax*scDiagram;
+    const endX = pd + wWindLoad + 20 + thickness*sc + 20 + mEdMax*scDiagram;
     const endY = cHeight - pd;
 
     // Set the control point of the curve
@@ -223,11 +228,6 @@ function visualize() {
     ctx.moveTo(startX, startY);
     ctx.lineTo(curveStartX, curveStartY);
 
-    // ctx.quadraticCurveTo(curve875X, curve875Y, curve75X, curve75Y);
-    // ctx.quadraticCurveTo(curve625X, curve625Y, curve50X, curve50Y);
-    // ctx.quadraticCurveTo(curve375X, curve375Y, curve25X, curve25Y);
-    // ctx.quadraticCurveTo(curve125X, curve125Y, endX, endY);
-
     ctx.lineTo(curve875X, curve875Y);
     ctx.lineTo(curve75X, curve75Y);
     ctx.lineTo(curve625X, curve625Y);
@@ -238,6 +238,9 @@ function visualize() {
     ctx.lineTo(endX, endY);
 
     ctx.lineTo(startX, startY);
+
+    ctx.fillStyle = "rgba(255,0,0,0.05)";
+    ctx.fill();
     ctx.stroke();
 
 
@@ -246,8 +249,12 @@ function visualize() {
     ctx.fillStyle = "black";
     ctx.fillText(roundTwo(0.6*mEdTop+mEdWind) + " kNm", startX + 5, (curve50Y-10*height));
     ctx.fillText(roundTwo(mEdTop) + " kNm", startX + 5, curveStartY);
-    ctx.fillText(roundTwo(pointLoad) + " kN", pd + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 0.5*pointLoad-20);
-    ctx.fillText("e = " + 1000*eccentricity + " mm", pd + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 0.5*pointLoad-5);
+    ctx.fillText(roundTwo(pointLoad) + " kN", pd + wWindLoad + 20 + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 0.5*pointLoad-20);
+    ctx.fillText("e = " + 1000*eccentricity + " mm", pd + wWindLoad + 20 + (thickness/2 + eccentricity)*sc + 5, cHeight - height * sc - pd - 0.5*pointLoad-5);
+    ctx.rotate(-Math.PI/2);
+    ctx.textAlign = "center";
+    ctx.fillText(roundTwo(windLoad) + " kN/m", -cHeight + 0.5*height*sc + pd, pd - 5);
+    ctx.restore();
 
 }
 
