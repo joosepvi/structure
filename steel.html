@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ee">
+<head>
+    <title>Terase kandevõime</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:title" content="structure.create"/>
+    <meta property="og:description" content="Terase kalkulaator">
+    <meta property="keywords" content="structural, computational, engineering, civil engineering, dynamo, grasshopper, revit, scripts">
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script id="MathJax-script" async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+
+    <script>
+        $.getJSON('./json/IPE-HEA-HEB.json', function(data) {
+
+            let dropdown = document.getElementById('crossSectionDropdown');
+
+            // populate select element with json.
+            for (let i = 0; i < data.length; i++) {
+                dropdown.innerHTML = dropdown.innerHTML + '<option value="' + data[i] + '">' + data[i]['Profiil'] + '</option>';
+            }
+
+
+            let dropdown2 = document.getElementById('crossSectionDropdown2');
+
+            // populate select element with json.
+            for (let i = 2; i < data.length; i++) {
+                dropdown2.innerHTML = dropdown2.innerHTML + '<option value="' + data[i] + '">' + data[i]['Profiil'] + '</option>';
+            }
+
+
+            $("#crossSectionDropdown").change(function () {
+                const selectedSubject = $("#crossSectionDropdown option:selected").text();
+
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i]['Profiil'] === selectedSubject) {
+                        let sectionData = data[i];
+
+                        let rawData = document.getElementById('rawData');
+                        rawData.innerHTML = JSON.stringify(sectionData).replace('{"', '').replace('"}', '').replaceAll('":"', ' = ').replaceAll('","', '</br>');
+
+                    }
+                }
+
+            });
+
+        });
+
+    </script>
+
+</head>
+<body>
+
+    <a class="return-to-index" href="index.html"><h1>structure.create</h1></a>
+
+    <div style="width: 500px">
+
+        <input type="text" list="crossSectionDropdown2" style="padding: 5px; margin: 20px;"/>
+        <datalist id="crossSectionDropdown2"></datalist>
+        <!--The SELECT element.-->
+
+        <select id="crossSectionDropdown" style="padding: 5px; margin: 20px;">
+            <option value="">-- Select --</option>
+        </select>
+
+        <p id="rawData" style="font-size: 0.8em; margin: 20px;"></p>
+
+
+    </div>
+    </br>
+    <a href="json/IPE-HEA-HEB.json">JSON</a>
+
+</body>
+</html>

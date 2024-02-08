@@ -49,30 +49,37 @@ h2 {
     transition: 0.2s;
 }
 #muuritis {
-    animation: circling 120s linear infinite;
+    animation: circling 150s linear infinite;
 
     background: url(img/skeem-muuritis.png) no-repeat center;
     background-size: contain;
 }
 #shs {
-    animation: circling 120s linear infinite;
+    animation: circling 150s linear infinite;
     animation-delay: -30s;
 
     background: url(img/skeem-shs.png) no-repeat center;
     background-size: contain;
 }
 #ipe {
-    animation: circling 120s linear infinite;
+    animation: circling 150s linear infinite;
     animation-delay: -60s;
 
     background: url(img/skeem-ipe.png) no-repeat center;
     background-size: contain;
 }
 #concrete {
-    animation: circling 120s linear infinite;
+    animation: circling 150s linear infinite;
     animation-delay: -90s;
 
     background: url(img/skeem-betoon.png) no-repeat center;
+    background-size: contain;
+}
+#reno {
+    animation: circling 150s linear infinite;
+    animation-delay: -120s;
+
+    background: url(img/skeem-reno.png) no-repeat center;
     background-size: contain;
 }
 @keyframes circling{
